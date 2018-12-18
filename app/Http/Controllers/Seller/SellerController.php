@@ -9,6 +9,14 @@ use App\User;
 
 class SellerController extends ApiController
 {
+    // public function index()
+    // {
+    //     $buyers = Seller::has('transactions')->get();
+
+    //     return $this->showAll($buyers);
+
+    //     //return response()->json(['data' => $buyers], 200);
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -49,9 +57,9 @@ class SellerController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Seller $seller)
     {
-        $seller = Seller::has('products')->findOrFail($id);
+       // $seller = Seller::has('products')->findOrFail($id);
 
         return $this->showOne($seller);
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\User;
+use App\Category;
 
 class UserController extends ApiController
 {
@@ -17,10 +18,12 @@ class UserController extends ApiController
     {
         $users = User::all();
 
-        return $this->showAll($users);
+        $categories = Category::all();
 
-       //return response()->json(['data' => $users], 200);
-        //return response()->json($users,  200);
+        //return $this->showAll($users);
+
+       return response()->json(['data' => $users, 'categories' => $categories], 200);
+        //return response()->json($categories,  200);
 
         // return $users;
 
@@ -72,9 +75,9 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
+       // $user = User::findOrFail($id);
 
         return $this->showOne($user);
 
@@ -99,9 +102,9 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
+        //$user = User::findOrFail($id);
 
         $rules = [
             'email' => 'email|unique:users, email' . $user->id,
@@ -126,12 +129,14 @@ class UserController extends ApiController
 
         if($request->has('admin')) {
             if(!$user->isVerified()) {
-                return response()->json(['error' => 'Only verified user can change the admin field!', 'code' => 409], 409);
+                //return response()->json(['error' => 'Only verified user can change the admin field!', 'code' => 409], 409);
+                return $this->errorResponse( 'Only verified user can change the admin field!', 409);
             }
             $user->admin = $request->admin;
 
             if(!$user->isDirty()) {
-                return response()->json(['error' => 'Please provide different value for update', 'code' => 422], 422);
+                //return response()->json(['error' => 'Please provide different value for update', 'code' => 422], 422);
+                return $this->errorResponse('Please provide different value for update', 422);
             }
 
             $user->save();
@@ -150,9 +155,9 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
+       // $user = User::findOrFail($id);
 
         $user->delete();
 
